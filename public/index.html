@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BridgeRAG – South African rights in plain language</title>
+<meta name="description" content="Ask a question about your civic and legal rights in South Africa and get a short answer with cited sources.">
+<style>
+  :root {
+    --bg: #fafaf8;
+    --surface: #ffffff;
+    --text: #1c1c1a;
+    --muted: #5f5f5a;
+    --border: #d9d8d2;
+    --accent: #1f5f4a;
+    --accent-contrast: #ffffff;
+    --note-bg: #f1f0ea;
+    --warn-bg: #fff6e5;
+    --warn-border: #e0b25a;
+    --err-bg: #fdeeee;
+    --err-border: #d98a8a;
+    --hl: #fff3b8;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141413;
+      --surface: #1d1d1b;
+      --text: #ecebe6;
+      --muted: #a3a29b;
+      --border: #3a3a36;
+      --accent: #5fbf9f;
+      --accent-contrast: #0d1f19;
+      --note-bg: #232321;
+      --warn-bg: #2b2416;
+      --warn-border: #7a6230;
+      --err-bg: #2c1a1a;
+      --err-border: #7d4545;
+      --hl: #4a4217;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+             max(32px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  }
+  main { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin: 8px 0 4px; line-height: 1.2; }
+  .tagline { margin: 0 0 16px; color: var(--muted); }
+  .notice {
+    background: var(--note-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+  label { display: block; font-weight: 600; margin-bottom: 6px; }
+  textarea {
+    width: 100%;
+    min-height: 96px;
+    resize: vertical;
+    padding: 12px;
+    font: inherit;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  textarea:focus-visible, button:focus-visible, summary:focus-visible, a:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+  .counter { font-size: 0.85rem; color: var(--muted); }
+  button.primary {
+    min-height: 44px;
+    padding: 0 22px;
+    font: inherit;
+    font-weight: 600;
+    color: var(--accent-contrast);
+    background: var(--accent);
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .examples { margin: 16px 0 0; }
+  .examples p { margin: 0 0 6px; font-size: 0.9rem; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  button.chip {
+    min-height: 44px;
+    padding: 8px 14px;
+    font: inherit;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    text-align: left;
+  }
+  #result { margin-top: 28px; }
+  #result:focus { outline: none; }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .card h2 { font-size: 1.05rem; margin: 0 0 8px; }
+  .answer { white-space: pre-wrap; margin: 0; }
+  .card.refusal { background: var(--warn-bg); border-color: var(--warn-border); }
+  .card.error { background: var(--err-bg); border-color: var(--err-border); }
+  sup.cite a {
+    text-decoration: none;
+    font-weight: 700;
+    padding: 0 3px;
+    color: var(--accent);
+  }
+  sup.cite a:hover { text-decoration: underline; }
+  .sources { margin-top: 20px; }
+  .sources h2 { font-size: 1.05rem; margin: 0 0 8px; }
+  .sources ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .source {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .source:target { background: var(--hl); }
+  .source .num { font-weight: 700; color: var(--accent); margin-right: 6px; }
+  .source .title { font-weight: 600; }
+  .source .ref { font-size: 0.85rem; color: var(--muted); margin: 2px 0 8px; }
+  .source .excerpt {
+    margin: 0;
+    font-size: 0.93rem;
+    border-left: 3px solid var(--border);
+    padding-left: 10px;
+  }
+  details.how { margin-top: 20px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  details.how summary { cursor: pointer; padding: 12px 14px; font-weight: 600; min-height: 44px; }
+  details.how .inner { padding: 0 14px 14px; font-size: 0.9rem; color: var(--muted); }
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.85rem; margin-top: 8px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--text); }
+  .loading { display: flex; align-items: center; gap: 10px; color: var(--muted); }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
+  footer { margin-top: 36px; font-size: 0.85rem; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <h1>BridgeRAG</h1>
+  <p class="tagline">Ask about your rights in South Africa and get a short answer with sources you can check.</p>
+
+  <div class="notice">
+    The guides behind this tool are plain-language summaries of South African law, not the official texts.
+    Answers are general information only and are not legal advice. For official wording, see gov.za or justice.gov.za.
+  </div>
+
+  <form id="ask-form" novalidate>
+    <label for="question">Your question</label>
+    <textarea id="question" maxlength="500" placeholder="For example: My landlord changed the locks while I was at work. What can I do?"></textarea>
+    <div class="row">
+      <span class="counter" id="counter" aria-live="off">0 / 500</span>
+      <button type="submit" class="primary" id="submit" disabled>Ask</button>
+    </div>
+    <p class="counter" style="margin:6px 0 0">Tip: press Ctrl+Enter to send.</p>
+  </form>
+
+  <div class="examples">
+    <p>Or try one of these:</p>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div id="result" tabindex="-1" aria-live="polite"></div>
+
+  <footer>Built by Qhamisa Tobie. Search uses semantic and keyword matching over a small set of guides, and answers are written only from the passages shown under &ldquo;Sources&rdquo;.</footer>
+</main>
+
+<script>
+(function () {
+  var MAX = 500;
+  var EXAMPLES = [
+    'My landlord changed the locks while I was at work. What can I do?',
+    'I was fired unfairly. How long do I have to complain?',
+    'What are my rights if I am arrested?'
+  ];
+
+  var form = document.getElementById('ask-form');
+  var input = document.getElementById('question');
+  var counter = document.getElementById('counter');
+  var submit = document.getElementById('submit');
+  var result = document.getElementById('result');
+  var chips = document.getElementById('chips');
+  var busy = false;
+
+  function el(tag, props, children) {
+    var node = document.createElement(tag);
+    if (props) {
+      Object.keys(props).forEach(function (k) {
+        if (k === 'class') node.className = props[k];
+        else if (k === 'text') node.textContent = props[k];
+        else node.setAttribute(k, props[k]);
+      });
+    }
+    (children || []).forEach(function (c) { if (c) node.appendChild(c); });
+    return node;
+  }
+
+  function updateState() {
+    var len = input.value.length;
+    counter.textContent = len + ' / ' + MAX;
+    submit.disabled = busy || input.value.trim().length === 0 || len > MAX;
+  }
+
+  function clearResult() { result.textContent = ''; }
+
+  function showLoading() {
+    clearResult();
+    result.appendChild(el('div', { class: 'loading', role: 'status' }, [
+      el('div', { class: 'spinner', 'aria-hidden': 'true' }),
+      el('span', { text: 'Searching the guides and writing an answer\u2026' })
+    ]));
+  }
+
+  function showError(message) {
+    clearResult();
+    var card = el('div', { class: 'card error', role: 'alert' }, [
+      el('h2', { text: 'Something went wrong' }),
+      el('p', { class: 'answer', text: message })
+    ]);
+    result.appendChild(card);
+    focusResult();
+  }
+
+  function focusResult() {
+    result.focus({ preventScroll: true });
+    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Builds the answer text safely: citations become links, everything else stays plain text
+  function renderAnswer(text, validNumbers) {
+    var p = el('p', { class: 'answer' });
+    text.split(/(\[\d+\])/).forEach(function (part) {
+      var m = /^\[(\d+)\]$/.exec(part);
+      if (m && validNumbers.indexOf(Number(m[1])) !== -1) {
+        var a = el('a', { href: '#src-' + m[1], 'aria-label': 'Source ' + m[1], text: m[1] });
+        p.appendChild(el('sup', { class: 'cite' }, [a]));
+      } else if (part) {
+        p.appendChild(document.createTextNode(part));
+      }
+    });
+    return p;
+  }
+
+  function renderSources(citations) {
+    var list = el('ol');
+    citations.forEach(function (c) {
+      var li = el('li', { class: 'source', id: 'src-' + c.number }, [
+        el('div', {}, [
+          el('span', { class: 'num', text: '[' + c.number + ']' }),
+          el('span', { class: 'title', text: c.document_title })
+        ]),
+        c.reference ? el('div', { class: 'ref', text: 'Summarises: ' + c.reference }) : null,
+        el('p', { class: 'excerpt', text: c.content })
+      ]);
+      list.appendChild(li);
+    });
+    return el('section', { class: 'sources', 'aria-label': 'Sources' }, [
+      el('h2', { text: 'Sources' }),
+      list
+    ]);
+  }
+
+  function renderHow(data) {
+    var r = data.retrieval;
+    if (!r) return null;
+    var rows = (r.candidates || []).map(function (c) {
+      return el('tr', {}, [
+        el('td', { text: c.document_title }),
+        el('td', { text: String(c.chunk_index === undefined ? '' : c.chunk_index) }),
+        el('td', { text: Number(c.similarity).toFixed(3) }),
+        el('td', { text: c.kept ? 'Used' : 'Dropped' })
+      ]);
+    });
+    var table = el('table', {}, [
+      el('thead', {}, [el('tr', {}, [
+        el('th', { text: 'Document' }),
+        el('th', { text: 'Chunk' }),
+        el('th', { text: 'Score' }),
+        el('th', { text: 'Status' })
+      ])]),
+      el('tbody', {}, rows)
+    ]);
+    var facts = [];
+    if (data.model) facts.push('Answer written by: ' + data.model + '.');
+    if (data.reason) facts.push('Reason for refusal: ' + data.reason + '.');
+    facts.push('A passage is used only if its score is at least ' + r.minSimilarity +
+      ' and within ' + r.relativeGap + ' of the best match.');
+    return el('details', { class: 'how' }, [
+      el('summary', { text: 'How this answer was found' }),
+      el('div', { class: 'inner' }, [
+        el('p', { text: facts.join(' ') }),
+        el('div', { class: 'scroll' }, [table])
+      ])
+    ]);
+  }
+
+  function showResult(data) {
+    clearResult();
+    if (data.refused) {
+      result.appendChild(el('div', { class: 'card refusal' }, [
+        el('h2', { text: 'I can\u2019t answer that from my guides' }),
+        el('p', { class: 'answer', text: data.answer }),
+        el('p', { class: 'answer', style: 'margin-top:8px', text: 'Try rephrasing your question, or ask about a different topic.' })
+      ]));
+    } else {
+      var numbers = (data.citations || []).map(function (c) { return c.number; });
+      result.appendChild(el('div', { class: 'card' }, [
+        el('h2', { text: 'Answer' }),
+        renderAnswer(data.answer, numbers)
+      ]));
+      if (data.citations && data.citations.length) result.appendChild(renderSources(data.citations));
+    }
+    var how = renderHow(data);
+    if (how) result.appendChild(how);
+    if (data.disclaimer) {
+      result.appendChild(el('p', { class: 'counter', style: 'margin-top:14px', text: data.disclaimer }));
+    }
+    focusResult();
+  }
+
+  async function ask(question) {
+    if (busy) return;
+    busy = true;
+    updateState();
+    showLoading();
+
+    var controller = new AbortController();
+    var timer = setTimeout(function () { controller.abort(); }, 90000);
+    try {
+      var res = await fetch('/api/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: question }),
+        signal: controller.signal
+      });
+      var data = null;
+      try { data = await res.json(); } catch (e) { data = null; }
+      if (!res.ok) {
+        showError((data && data.error) || 'The service returned an error. Please try again.');
+      } else if (!data || typeof data.answer !== 'string') {
+        showError('The service sent an unexpected response. Please try again.');
+      } else {
+        showResult(data);
+      }
+    } catch (err) {
+      if (err && err.name === 'AbortError') {
+        showError('This is taking too long. Please try again in a moment.');
+      } else {
+        showError('Could not reach the service. Check your connection and try again.');
+      }
+    } finally {
+      clearTimeout(timer);
+      busy = false;
+      updateState();
+    }
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var q = input.value.trim();
+    if (q && q.length <= MAX) ask(q);
+  });
+
+  input.addEventListener('input', updateState);
+  input.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+      e.preventDefault();
+      form.requestSubmit();
+    }
+  });
+
+  EXAMPLES.forEach(function (q) {
+    var b = el('button', { type: 'button', class: 'chip', text: q });
+    b.addEventListener('click', function () {
+      input.value = q;
+      updateState();
+      ask(q);
+    });
+    chips.appendChild(b);
+  });
+
+  updateState();
+})();
+</script>
+</body>
+</html>
