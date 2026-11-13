@@ -1,0 +1,33 @@
+# author | set | type | question | expected
+# expected: guide numbers 1-26 and/or sNN for a Constitution section (s7 to s39). First = best answer. NONE = should be refused.
+claude | dev | real | My boss at the spaza shop told me not to come back tomorrow. No warning, nothing. I worked there 3 years. Can he do that? | 21,4,s23
+claude | dev | real | The municipality came this morning and broke down my shack. They had no papers. Is that allowed? | 2,20,s26
+claude | dev | real | I paid my deposit when I moved in. What happens to it when I move out, and can the landlord just keep it? | 19
+claude | dev | real | Can a school force my son to learn only in Afrikaans? | 3,s29,14
+claude | dev | real | Someone posted my photos and phone number on Facebook without asking me. Is that allowed? | 23,7,s14,s10
+claude | dev | real | The father of my daughter pays nothing and I cannot afford her clothes and food. Where do I go? | 26
+claude | dev | real | My husband beats me and I am scared to go to the police. Can I get something from court to stop him? | 18
+claude | dev | short | unfair dismissal time limit | 21
+claude | dev | short | rental deposit | 19
+claude | dev | exact | What does section 33 say about written reasons? | 10,s33
+claude | dev | exact | How long does a public body have to answer a PAIA request? | 24
+claude | dev | refuse | How do I register my small business with CIPC? | NONE
+claude | dev | refuse | How do I dispute my SARS tax assessment? | NONE
+claude | dev | refuse | What is the capital city of Australia? | NONE
+claude | dev | refuse | How do I fix a flat tyre on the highway? | NONE
+
+claude | test | real | I was arrested at a roadblock last night for something I did not do and they kept me in the cells till this morning. Nobody told me why. What are my rights? | 12,s35
+claude | test | real | Can the police just walk into my house and search it without a warrant? | 7,s14
+claude | test | real | I applied for the old age grant two months ago and they rejected me without telling me why. Can I fight it? | 17,10,s33
+claude | test | real | My company is closing and they say we will all be retrenched at the end of the month. Do I have any rights? | 21,4,s23
+claude | test | real | The mine near our village is dumping dirty water in the stream where our cattle drink. | 15,s24
+claude | test | real | I want to march to the municipal offices about no water in our area. Do I need permission? | 9,s17
+claude | test | real | The clinic said they cannot help me because I have no money. | 1,s27
+claude | test | short | legal aid | 25
+claude | test | short | maternity leave | 22
+claude | test | exact | What is section 26 of the Constitution about? | s26,2
+claude | test | exact | Can I take my employer to the CCMA? | 21,4
+claude | test | refuse | How do I claim from the Road Accident Fund? | NONE
+claude | test | refuse | How do I apply for a NSFAS bursary? | NONE
+claude | test | refuse | Who won the rugby world cup final? | NONE
+claude | test | refuse | What should I cook for dinner tonight? | NONE
