@@ -1,5 +1,9 @@
 # author | set | type | question | expected
 # expected: guide numbers 1-26 and/or sNN for a Constitution section (s7 to s39). First = best answer. NONE = should be refused.
+# DEV set: we may look at failures and fix the system. TEST set: run once at the end, never tuned on.
+# Questions marked claude were written by the AI assistant that helped build this project, after the guides existed.
+# Lines marked qhamisa were written by the project author. Add your own at the bottom, in your own words.
+
 claude | dev | real | My boss at the spaza shop told me not to come back tomorrow. No warning, nothing. I worked there 3 years. Can he do that? | 21,4,s23
 claude | dev | real | The municipality came this morning and broke down my shack. They had no papers. Is that allowed? | 2,20,s26
 claude | dev | real | I paid my deposit when I moved in. What happens to it when I move out, and can the landlord just keep it? | 19
@@ -31,3 +35,6 @@ claude | test | refuse | How do I claim from the Road Accident Fund? | NONE
 claude | test | refuse | How do I apply for a NSFAS bursary? | NONE
 claude | test | refuse | Who won the rugby world cup final? | NONE
 claude | test | refuse | What should I cook for dinner tonight? | NONE
+
+# Your own questions go below, for example:
+# qhamisa | test | real | <your question in your own words> | 12
