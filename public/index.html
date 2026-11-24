@@ -277,7 +277,7 @@
           el('span', { class: 'num', text: '[' + c.number + ']' }),
           el('span', { class: 'title', text: c.document_title })
         ]),
-        c.reference ? el('div', { class: 'ref', text: 'Summarises: ' + c.reference }) : null,
+        c.reference ? el('div', { class: 'ref', text: (c.source === 'official_text' || (c.document_title && c.document_title.indexOf('Constitution s') === 0) ? '' : 'Summarises: ') + c.reference }) : null,
         el('p', { class: 'excerpt', text: c.content })
       ]);
       list.appendChild(li);
