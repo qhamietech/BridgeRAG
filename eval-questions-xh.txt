@@ -1,0 +1,11 @@
+﻿# author | set | type | question | expected
+# Written by the project author, in her own words, before any isiXhosa evaluation was run.
+# expected: sNN = Constitution Chapter 2 section (s7 to s39). First = best answer. NONE = should be refused.
+qhamisa | test | real | Ndi ngenza njani xa ndihlukumezwa ngu makhelwane endithuka imihla le? | s12,s10
+qhamisa | test | real | Kuthiwa andikwazi ukufumana ipillisi zam eclinic ngoba andingo mhlali wakule ndawo ndenze njani? | s27
+qhamisa | test | real | Andivunyelwa ukuba ndingene ndithenge ukutya ngoba kuthiwa ayiyo lali yam lena ndikuyo ndenze njani? | s21,s27
+qhamisa | test | real | Abantwana bam abavunyelwa ukuba bafunde kwi public school ye lali kuthiwa mandi bhatale kqala ngeloxesha abanye abantwana bafunda benga bhatali, ithiwani into enjena? | s29,s9
+qhamisa | test | exact | Ichaza ithini intsingiselo xa kuphuculwa umthetho onga bhalwanga phantsi? | s39,s8
+qhamisa | test | exact | Umqulu wama lungelo uyawukhanyela ubukho bamanye amalungelo? | s39
+qhamisa | test | refuse | Ndinga banjwa ngu SARS xa ndine shishini ndibe ndinga bhalisanga naye? | NONE
+qhamisa | test | refuse | Xa ndingene engozini endleleni ndiya bhatalwa imali yengozi? | NONE
