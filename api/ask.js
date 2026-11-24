@@ -127,6 +127,7 @@ export default async function handler(req, res) {
             document_title: s.document_title,
             chunk_index: s.metadata?.chunk_index,
             reference: s.metadata?.reference,
+          source: s.metadata?.source,
             similarity: s.similarity,
             content: s.content,
           };
